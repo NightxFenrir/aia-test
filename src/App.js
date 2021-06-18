@@ -8,10 +8,16 @@ import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 
 const App = () => {
+	const [search, setSearch] = React.useState('');
+
+	const handleSearchChange = value => {
+		setSearch(value);
+	};
+
 	return (
 		<div>
-			<Header />
-			<Album />
+			<Header onActionClick={handleSearchChange} />
+			<Album inputSearch={search} />
 			<Footer />
 		</div>
 	);

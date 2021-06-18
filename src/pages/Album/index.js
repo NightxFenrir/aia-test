@@ -21,30 +21,51 @@ import InfoIcon from '@material-ui/icons/Info';
 import './index.css';
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FsLightbox from 'fslightbox-react';
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const API_URL = 'http://localhost:8081';
 
-const Album = () => {
+const Album = ({ inputSearch }) => {
 	const [photos, setPhotos] = useState([]);
+	const [toggler, setToggler] = useState(false);
+	const [currentSlide, setCurrentSlide] = useState(1);
 
 	useEffect(() => {
-		callApi();
-	}, []);
+		setPhotos([]);
+		callApi(false);
+	}, [inputSearch]);
 
-	useEffect(() => {
-		console.log(`photos`, photos);
-	}, [photos]);
+	// useEffect(() => {
+	// 	console.log(`photos`, photos);
 
-	const callApi = () => {
+	// 	const items = photos.map(d => {
+	// 		return d.media.m;
+	// 	});
+
+	// 	setPhotosArray(items);
+	// }, [photos]);
+
+	const callApi = (loop = false) => {
+		const tags = inputSearch && `?tags=${inputSearch}`;
+		console.log(`photos 1`, photos);
 		axios
-			.get(API_URL + '/photos-public')
+			.get(API_URL + '/photos-public' + tags)
 			.then(response => {
 				console.log(`response`, response);
 
-				if (response.data.success) setPhotos([...photos, ...response.data.result.items]);
+				if (response.data.success) {
+					if (loop) setPhotos([...photos, ...response.data.result.items]);
+					else setPhotos(response.data.result.items);
+				}
 			})
 			.catch(error => console.log(`error`, error));
+	};
+
+	const toggleLightbox = index => {
+		setToggler(!toggler);
+		setCurrentSlide(index);
 	};
 
 	return (
@@ -64,11 +85,28 @@ const Album = () => {
 			<Container sx={{ py: 8 }} maxWidth="lg">
 				{/* End hero unit */}
 
-				<InfiniteScroll dataLength={photos.length} next={() => callApi()} hasMore={true} loader={<h4>Loading...</h4>}>
+				<FsLightbox
+					toggler={toggler}
+					sources={photos.map(d => {
+						return d.media.m;
+					})}
+					sourceIndex={currentSlide}
+					key={photos.length}
+				/>
+				<InfiniteScroll
+					dataLength={photos.length}
+					next={() => callApi(true)}
+					hasMore={true}
+					loader={
+						<div style={{ textAlign: 'center', padding: 12 }}>
+							<CircularProgress />
+						</div>
+					}
+				>
 					<GridList cellHeight={300} spacing={4} cols={3}>
 						{photos.map((tile, index) => (
 							<GridListTile key={index} cols={1}>
-								<img src={tile.media.m} alt={tile.title} />
+								<img src={tile.media.m} alt={tile.title} onClick={() => toggleLightbox(index)} />
 								<GridListTileBar
 									title={tile.title}
 									subtitle={<span>by: {tile.author}</span>}
