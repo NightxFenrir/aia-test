@@ -18,13 +18,12 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
-import './index.css';
+import './album.css';
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FsLightbox from 'fslightbox-react';
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const API_URL = 'http://localhost:8081';
 
 const Album = ({ inputSearch }) => {
