@@ -24,7 +24,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FsLightbox from 'fslightbox-react';
 
-const API_URL = 'http://localhost:8081';
+// const API_URL = 'http://localhost:8081';
+const API_URL = 'https://aia-test-api.herokuapp.com';
 
 const Album = ({ inputSearch }) => {
 	const [photos, setPhotos] = useState([]);
